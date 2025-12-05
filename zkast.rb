@@ -8,23 +8,9 @@ class Zkast < Formula
   depends_on "python3"
 
   def install
+    # Install using pip - Homebrew will attempt to fix dylib IDs automatically
+    # pydantic_core may show a warning about header size, but this is harmless
     system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "."
-  end
-
-  def post_install
-    # pydantic_core's binary has a header that's too small for Homebrew's dylib ID fixing
-    # This is safe to ignore - the package works correctly without the fix
-    python_site_packages = prefix/"lib/python3.14/site-packages"
-    pydantic_core_so = python_site_packages/"pydantic_core/_pydantic_core.cpython-314-darwin.so"
-    return unless pydantic_core_so.exist?
-
-    # Try to fix the dylib ID manually with a workaround
-    # If it fails, that's okay - the package still works
-    begin
-      system "install_name_tool", "-id", "@rpath/_pydantic_core.cpython-314-darwin.so", pydantic_core_so.to_s
-    rescue StandardError
-      # Ignore errors - package works fine without this fix
-    end
   end
 
   test do
