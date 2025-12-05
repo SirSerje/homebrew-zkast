@@ -11,9 +11,11 @@ class Zkast < Formula
     system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "."
   end
 
-  def post_install
-    # Skip problematic dylib ID fixing that causes errors with pydantic_core
-    # The package works fine without this step
+  def caveats
+    <<~EOS
+      Note: You may see a warning about dylib ID fixing during installation.
+      This is harmless and the package will work correctly.
+    EOS
   end
 
   test do
