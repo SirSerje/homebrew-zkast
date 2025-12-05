@@ -1,4 +1,6 @@
 class Zkast < Formula
+  include Language::Python::Virtualenv
+
   desc "Command-line tool for managing your notes with a beautiful TUI interface"
   homepage "https://github.com/SirSerje/zkast"
   url "https://github.com/SirSerje/zkast/archive/refs/tags/v0.1.0.tar.gz"
@@ -8,14 +10,7 @@ class Zkast < Formula
   depends_on "python3"
 
   def install
-    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "."
-  end
-
-  def caveats
-    <<~EOS
-      Note: You may see a warning about dylib ID fixing during installation.
-      This is harmless and the package will work correctly.
-    EOS
+    virtualenv_install_with_resources
   end
 
   test do
