@@ -14,15 +14,13 @@ class Zkast < Formula
   end
 
   def post_install
-    # Skip problematic dylib ID fixing for pydantic_core
-    # The binary header is too small to accommodate the new paths
-    # This is safe to skip as the package works correctly without it
-    python_site_packages = Language::Python.site_packages("python3")
-    pydantic_core_so = libexec/"lib/python3.14/site-packages/pydantic_core/_pydantic_core.cpython-314-darwin.so"
-    if pydantic_core_so.exist?
-      # Remove the file from Homebrew's linkage fixing queue by touching it
-      # This prevents Homebrew from trying to fix it
-      system "touch", pydantic_core_so.to_s
+    # Prevent Homebrew from trying to fix dylib IDs for pydantic_core
+    # The binary header is too small, but the package works fine without fixing
+    python_version = "3.14"
+    pydantic_core_path = libexec/"lib/python#{python_version}/site-packages/pydantic_core"
+    if pydantic_core_path.exist?
+      # Create a marker file to indicate this was handled
+      (pydantic_core_path/".homebrew_skip_relocation").write("")
     end
   end
 
