@@ -8,10 +8,10 @@ class Zkast < Formula
   depends_on "python3"
 
   def install
-    # Skip problematic dylib ID fixing for Python extensions
-    ENV["HOMEBREW_SKIP_OR_LATER_CHECK"] = "1"
-    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "--no-deps", "."
-    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "-r", buildpath/"requirements.txt"
+    python3 = Formula["python3"].opt_libexec/"bin/python3"
+    venv = virtualenv_create(libexec, python3)
+    venv.pip_install buildpath
+    bin.install_symlink libexec/"bin/zkast"
   end
 
   test do
