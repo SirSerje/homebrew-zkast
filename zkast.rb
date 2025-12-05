@@ -8,8 +8,10 @@ class Zkast < Formula
   depends_on "python3"
 
   def install
-    ENV["PYTHONPATH"] = prefix/Language::Python.site_packages("python3")
-    system "python3", "-m", "pip", "install", "--no-build-isolation", "--prefix=#{prefix}", "--no-warn-script-location", "."
+    # Skip problematic dylib ID fixing for Python extensions
+    ENV["HOMEBREW_SKIP_OR_LATER_CHECK"] = "1"
+    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "--no-deps", "."
+    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "-r", buildpath/"requirements.txt"
   end
 
   test do
