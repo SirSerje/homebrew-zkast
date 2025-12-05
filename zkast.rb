@@ -8,7 +8,8 @@ class Zkast < Formula
   depends_on "python3"
 
   def install
-    system "python3", "-m", "pip", "install", "--prefix=#{prefix}", "--no-warn-script-location", "."
+    ENV["PYTHONPATH"] = prefix/Language::Python.site_packages("python3")
+    system "python3", "-m", "pip", "install", "--no-build-isolation", "--prefix=#{prefix}", "--no-warn-script-location", "."
   end
 
   test do
